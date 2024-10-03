@@ -32,4 +32,10 @@ public class ExampleController {
     public ExampleRequest findById(@PathVariable String id) {
         return exampleCorePort.findById(id);
     }
+    @PutMapping
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ExampleRequest updateExample(@RequestBody ExampleRequest exampleRequest) {
+        return exampleCorePort.updateExample(exampleMapper.toModel(exampleRequest));
+    }
 }
