@@ -30,7 +30,5 @@ public class ExampleHandlerException {
         exceptionModel.setMessage("Nada encontrado");
         exceptionModel.setStatusCode(HttpStatus.NOT_FOUND.value());
         return exceptionModel;
-
     }
-
 }

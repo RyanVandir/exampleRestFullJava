@@ -75,4 +75,21 @@ public class ExampleCore implements ExampleCorePort {
             return exampleMapper.toRequest(exampleModelResponse);
         }
     }
+
+    @Override
+    public ExampleRequest deleteExample(String id) {
+        ExampleModel exampleModel = new ExampleModel();
+        exampleModels.forEach(it -> {
+            if (Objects.equals(it.getId(), id)) {
+                exampleModel.setId(it.getId());
+                exampleModel.setMessage(it.getMessage());
+            }
+        });
+        if (exampleModel.getId() != null) {
+            exampleModels.remove(exampleModel);
+        } else {
+            throw new NoContentFoundException("Id não existe");
+        }
+        return exampleMapper.toRequest(exampleModel);
+    }
 }
