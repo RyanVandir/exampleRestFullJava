@@ -20,6 +20,7 @@ public class ExampleHandlerException {
         return exceptionModel;
 
     }
+
     @ExceptionHandler(NoContentFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -31,4 +32,5 @@ public class ExampleHandlerException {
         return exceptionModel;
 
     }
+
 }

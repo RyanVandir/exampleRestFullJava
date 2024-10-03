@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,22 @@ public class ExampleCore implements ExampleCorePort {
            return exampleMapper.toRequest(exampleModels);
         } else {
             throw new NoContentFoundException("Nenhum dado foi encontrado");
+        }
+    }
+
+    @Override
+    public ExampleRequest findById(String id) {
+        ExampleModel exampleModel = new ExampleModel();
+        exampleModels.forEach(it -> {
+                if (Objects.equals(it.getId(), id)) {
+                    exampleModel.setId(it.getId());
+                    exampleModel.setMessage(it.getMessage());
+                }
+        });
+        if (exampleModel.getId() != null) {
+            return exampleMapper.toRequest(exampleModel);
+        } else {
+            throw new NoContentFoundException("Id não encontrado");
         }
     }
 }

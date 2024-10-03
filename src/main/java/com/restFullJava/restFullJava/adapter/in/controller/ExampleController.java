@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("example")
@@ -24,8 +22,14 @@ public class ExampleController {
     public ExampleRequest createdExample(@RequestBody ExampleRequest exampleRequest) {
         return exampleCorePort.createdExample(exampleMapper.toModel(exampleRequest));
     }
+
     @GetMapping
-    public  List<ExampleRequest> findAll() {
+    public List<ExampleRequest> findAll() {
         return exampleCorePort.findAll();
+    }
+
+    @GetMapping("{id}")
+    public ExampleRequest findById(@PathVariable String id) {
+        return exampleCorePort.findById(id);
     }
 }

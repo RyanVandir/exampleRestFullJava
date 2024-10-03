@@ -9,4 +9,6 @@ public interface ExampleCorePort {
     ExampleRequest createdExample(ExampleModel exampleModel);
 
     List<ExampleRequest> findAll();
+
+    ExampleRequest findById(String id);
 }
