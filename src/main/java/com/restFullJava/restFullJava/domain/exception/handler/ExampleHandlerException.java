@@ -18,5 +18,17 @@ public class ExampleHandlerException {
         exceptionModel.setMessage("Dados inválidos");
         exceptionModel.setStatusCode(HttpStatus.BAD_REQUEST.value());
         return exceptionModel;
+
+    }
+    @ExceptionHandler(NoContentFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ExceptionModel NoContentFoundException(NoContentFoundException ex) {
+        System.out.println(ex.getMessage());
+        ExceptionModel exceptionModel = new ExceptionModel();
+        exceptionModel.setMessage("Nada encontrado");
+        exceptionModel.setStatusCode(HttpStatus.NOT_FOUND.value());
+        return exceptionModel;
+
     }
 }

@@ -2,6 +2,7 @@ package com.restFullJava.restFullJava.domain.core;
 
 import com.restFullJava.restFullJava.adapter.in.request.ExampleRequest;
 import com.restFullJava.restFullJava.domain.exception.handler.InvalidRequestException;
+import com.restFullJava.restFullJava.domain.exception.handler.NoContentFoundException;
 import com.restFullJava.restFullJava.domain.mapper.ExampleMapper;
 import com.restFullJava.restFullJava.domain.model.ExampleModel;
 import com.restFullJava.restFullJava.domain.port.ExampleCorePort;
@@ -24,6 +25,15 @@ public class ExampleCore implements ExampleCorePort {
         } else {
             throw new InvalidRequestException("deu ruim nesse bagulho");
         }
-        return exampleMapper.toResquest(exampleModel);
+        return exampleMapper.toRequest(exampleModel);
+    }
+
+    @Override
+    public List<ExampleRequest> findAll() {
+        if (!exampleModels.isEmpty()) {
+           return exampleMapper.toRequest(exampleModels);
+        } else {
+            throw new NoContentFoundException("Nenhum dado foi encontrado");
+        }
     }
 }
