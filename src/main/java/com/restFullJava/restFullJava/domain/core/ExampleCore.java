@@ -10,22 +10,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ExampleCore implements ExampleCorePort {
     private final ExampleMapper exampleMapper;
 
-    List<ExampleModel> exampleModels = new ArrayList<>();
+    HashMap<String, ExampleModel> exampleModels = new HashMap<>();
 
     @Override
     public ExampleRequest createdExample(ExampleModel exampleModel) {
         if (!exampleModel.getMessage().isBlank()) {
-            exampleModels.add(exampleModel);
+            exampleModels.put(exampleModel.getId(), exampleModel);
         } else {
-            throw new InvalidRequestException("deu ruim nesse bagulho");
+            throw new InvalidRequestException("Mensagem invalida");
         }
         return exampleMapper.toRequest(exampleModel);
     }
@@ -33,7 +33,8 @@ public class ExampleCore implements ExampleCorePort {
     @Override
     public List<ExampleRequest> findAll() {
         if (!exampleModels.isEmpty()) {
-            return exampleMapper.toRequest(exampleModels);
+            List<ExampleModel> listExampleModels = new ArrayList<>(exampleModels.values());
+            return exampleMapper.toRequest(listExampleModels);
         } else {
             throw new NoContentFoundException("Nenhum dado foi encontrado");
         }
@@ -41,14 +42,8 @@ public class ExampleCore implements ExampleCorePort {
 
     @Override
     public ExampleRequest findById(String id) {
-        ExampleModel exampleModel = new ExampleModel();
-        exampleModels.forEach(it -> {
-            if (Objects.equals(it.getId(), id)) {
-                exampleModel.setId(it.getId());
-                exampleModel.setMessage(it.getMessage());
-            }
-        });
-        if (exampleModel.getId() != null) {
+        ExampleModel exampleModel = exampleModels.get(id);
+        if (exampleModel != null) {
             return exampleMapper.toRequest(exampleModel);
         } else {
             throw new NoContentFoundException("Id não encontrado");
@@ -57,39 +52,23 @@ public class ExampleCore implements ExampleCorePort {
 
     @Override
     public ExampleRequest updateExample(ExampleModel exampleModel) {
-        ExampleModel exampleModelResponse = new ExampleModel();
-        if (exampleModel.getMessage().isBlank()) {
-            throw new InvalidRequestException("deu ruim nesse bagulho");
-
+        ExampleModel exampleModelResponse = exampleModels.get(exampleModel.getId());
+        if (exampleModelResponse == null) {
+            throw new NoContentFoundException("Id não encontrado");
         } else {
-            exampleModels.forEach(it -> {
-                if (Objects.equals(it.getId(), exampleModel.getId())) {
-                    it.setMessage(exampleModel.getMessage());
-                    exampleModelResponse.setId(it.getId());
-                    exampleModelResponse.setMessage(it.getMessage());
-                }
-            });
-            if (exampleModelResponse.getId() == null) {
-                throw new NoContentFoundException("Id não encontrado");
-            }
-            return exampleMapper.toRequest(exampleModelResponse);
+            exampleModels.put(exampleModel.getId(), exampleModel);
+            return exampleMapper.toRequest(exampleModel);
         }
     }
 
     @Override
     public ExampleRequest deleteExample(String id) {
-        ExampleModel exampleModel = new ExampleModel();
-        exampleModels.forEach(it -> {
-            if (Objects.equals(it.getId(), id)) {
-                exampleModel.setId(it.getId());
-                exampleModel.setMessage(it.getMessage());
-            }
-        });
-        if (exampleModel.getId() != null) {
-            exampleModels.remove(exampleModel);
+        ExampleModel exampleModelResponse = exampleModels.get(id);
+        if (exampleModelResponse == null) {
+            throw new NoContentFoundException("Id não encontrado");
         } else {
-            throw new NoContentFoundException("Id não existe");
+            exampleModels.remove(id);
+            return exampleMapper.toRequest(exampleModelResponse);
         }
-        return exampleMapper.toRequest(exampleModel);
     }
 }
